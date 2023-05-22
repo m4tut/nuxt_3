@@ -1,0 +1,51 @@
+// =============================================================================
+// Font Face (https://gist.github.com/jonathantneal/d0460e5c2d5d7f9bc5e6)
+// =============================================================================
+@mixin font-face(
+  $name,
+  $path,
+  $weight: null,
+  $style: null,
+  $exts: eot woff2 woff ttf svg
+) {
+  $src: null;
+  $extmods: (
+    eot: '?',
+    svg: '#' + str-replace($name, ' ', '_'),
+  );
+  $formats: (
+    otf: 'opentype',
+    ttf: 'truetype',
+  );
+
+  @each $ext in $exts {
+    $extmod: if(map.has-key($extmods, $ext), $ext + map.get($extmods, $ext), $ext);
+    $format: if(map.has-key($formats, $ext), map.get($formats, $ext), $ext);
+    $src: list.append(
+      $src,
+      url(string.quote($path + '.' + $extmod)) format(string.quote($format)),
+      comma
+    );
+  }
+
+  @font-face {
+    src: $src;
+    font-family: string.quote($name);
+    font-weight: $weight;
+    font-style: $style;
+    font-display: swap; // add this line
+  }
+}
+
+// Media
+@mixin media-max($size) {
+  @media screen and (max-width: $size) {
+    @content;
+  }
+}
+
+@mixin media-min($size) {
+  @media screen and (min-width: $size) {
+    @content;
+  }
+}
